@@ -133,7 +133,7 @@ async def daily_ping():
     while not bot.is_closed():
         now = datetime.now()
         # Jeden Tag um 14:00 Uhr
-        target = datetime.combine(now.date(), time(21, 15))
+        target = datetime.combine(now.date(), time(20, 15))
         if now >= target:
             from datetime import timedelta
             target += timedelta(days=1)
