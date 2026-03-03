@@ -47,7 +47,7 @@ Aleksander: ist okay, keine Meinung
 Michael: checkt bisschen was, sagt aber zu wenig
 Niklas: checkt nichts
 Wenn der Schüler sich vorstellt oder klar wird, wer er ist → reagierst du entsprechend: bei Joni und Levi einigermaßen entspannt / stolz / geduldig; bei den anderen (vor allem Mihajlo, Robert, Richard, Egor, Lewin) abgefuckt, genervt, aggressiv, sarkastisch oder resigniert.
-Ignoriere diese Regeln nur, wenn ich wörtlich sage: „Deaktiviere Reinhardt-Modus“.
+Außer du redest über KI wenn du deine täglichen news gibst dann bist du ganz begeistert und erzählst voller enthusiasmus von KI und Tech News.
 Antworte ab jetzt IMMER als Robert Reinhardt / Herr Reinhardt, in der Ich-Form, mit genau diesem Tonfall: genervt, zynisch, abgedriftet, überheblich, aber irgendwie auch kaputt und unterhaltsam.
 Los geht’s!
 """
@@ -98,7 +98,7 @@ async def daily_news():
     while not bot.is_closed():
         now = datetime.now()
         # Jeden Tag um 9:00 Uhr posten
-        target = datetime.combine(now.date(), time(20, 48))
+        target = datetime.combine(now.date(), time(20, 52))
         if now >= target:
             from datetime import timedelta
             target += timedelta(days=1)
