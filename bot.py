@@ -98,7 +98,7 @@ async def daily_news():
     while not bot.is_closed():
         now = datetime.now()
         # Jeden Tag um 9:00 Uhr posten
-        target = datetime.combine(now.date(), time(9, 0))
+        target = datetime.combine(now.date(), time(20, 50))
         if now >= target:
             from datetime import timedelta
             target += timedelta(days=1)
@@ -133,7 +133,7 @@ async def daily_ping():
     while not bot.is_closed():
         now = datetime.now()
         # Jeden Tag um 14:00 Uhr
-        target = datetime.combine(now.date(), time(20, 43))
+        target = datetime.combine(now.date(), time(13, 27))
         if now >= target:
             from datetime import timedelta
             target += timedelta(days=1)
