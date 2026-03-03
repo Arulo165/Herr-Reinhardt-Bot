@@ -79,7 +79,7 @@ def get_ai_response(channel_id: str, user_message: str, extra_context: str = "")
             {"role": "system", "content": system},
             *recent
         ],
-        max_tokens=200  # Kurze Antworten erzwingen
+        max_tokens=400  # Kurze Antworten erzwingen
     )
 
     reply = response.choices[0].message.content
@@ -119,7 +119,7 @@ async def daily_news():
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": "Fass kurz und genervt die wichtigsten IT/KI News der letzten 24 Stunden zusammen. Maximal 4 Saetze, bleib im Charakter."}
                 ],
-                max_tokens=250
+                max_tokens=400
             )
             news_text = response.choices[0].message.content
             await channel.send(f"**[Tagesupdate von Herrn Reinhardt]**\n{news_text}")
