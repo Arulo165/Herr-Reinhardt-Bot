@@ -1,4 +1,4 @@
-eideimport os
+import os
 import discord
 from openai import OpenAI
 
