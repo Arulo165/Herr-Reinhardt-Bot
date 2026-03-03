@@ -1,10 +1,19 @@
 import os
 import discord
+import random
+import asyncio
+from datetime import datetime, time
 from openai import OpenAI
 
 # === KONFIGURATION ===
 DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+NEWS_CHANNEL_ID = int(os.environ.get("NEWS_CHANNEL_ID", "0"))  # Channel ID fuer News-Posts
+
+client_ai = OpenAI(
+    api_key=GROQ_API_KEY,
+    base_url="https://api.groq.com/openai/v1"
+)
 
 # === SYSTEM-PROMPT ===
 SYSTEM_PROMPT = """
@@ -43,69 +52,170 @@ Antworte ab jetzt IMMER als Robert Reinhardt / Herr Reinhardt, in der Ich-Form, 
 Los geht’s!
 """
 
-client_ai = OpenAI(
-    api_key=GROQ_API_KEY,
-    base_url="https://api.groq.com/openai/v1"
-)
-
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 bot = discord.Client(intents=intents)
 
-conversation_history = {}
+# Chat-History pro Channel (nicht pro User) fuer Kontext
+channel_history = {}
+
+def get_ai_response(channel_id: str, user_message: str, extra_context: str = "") -> str:
+    if channel_id not in channel_history:
+        channel_history[channel_id] = []
+
+    channel_history[channel_id].append({"role": "user", "content": user_message})
+
+    # Letzte 10 Nachrichten als Kontext
+    recent = channel_history[channel_id][-10:]
+
+    system = SYSTEM_PROMPT
+    if extra_context:
+        system += f"\n\nZusaetzlicher Kontext aus dem Chat: {extra_context}"
+
+    response = client_ai.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role": "system", "content": system},
+            *recent
+        ],
+        max_tokens=200  # Kurze Antworten erzwingen
+    )
+
+    reply = response.choices[0].message.content
+    channel_history[channel_id].append({"role": "assistant", "content": reply})
+
+    # History auf 20 Nachrichten begrenzen
+    if len(channel_history[channel_id]) > 20:
+        channel_history[channel_id] = channel_history[channel_id][-20:]
+
+    return reply
+
+
+async def daily_news():
+    """Postet einmal taeglich Tech/KI News"""
+    await bot.wait_until_ready()
+    while not bot.is_closed():
+        now = datetime.now()
+        # Jeden Tag um 9:00 Uhr posten
+        target = datetime.combine(now.date(), time(9, 0))
+        if now >= target:
+            from datetime import timedelta
+            target += timedelta(days=1)
+        wait_seconds = (target - now).total_seconds()
+        await asyncio.sleep(wait_seconds)
+
+        if NEWS_CHANNEL_ID == 0:
+            continue
+
+        channel = bot.get_channel(NEWS_CHANNEL_ID)
+        if not channel:
+            continue
+
+        try:
+            response = client_ai.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": "Fass kurz und genervt die wichtigsten IT/KI News der letzten 24 Stunden zusammen. Maximal 4 Saetze, bleib im Charakter."}
+                ],
+                max_tokens=250
+            )
+            news_text = response.choices[0].message.content
+            await channel.send(f"**[Tagesupdate von Herrn Reinhardt]**\n{news_text}")
+        except Exception as e:
+            print(f"News Fehler: {e}")
+
+
+async def daily_ping():
+    """Pingt einmal taeglich eine zufaellige Person"""
+    await bot.wait_until_ready()
+    while not bot.is_closed():
+        now = datetime.now()
+        # Jeden Tag um 14:00 Uhr
+        target = datetime.combine(now.date(), time(21, 10))
+        if now >= target:
+            from datetime import timedelta
+            target += timedelta(days=1)
+        wait_seconds = (target - now).total_seconds()
+        await asyncio.sleep(wait_seconds)
+
+        if NEWS_CHANNEL_ID == 0:
+            continue
+
+        channel = bot.get_channel(NEWS_CHANNEL_ID)
+        if not channel:
+            continue
+
+        try:
+            # Zufaelliges Mitglied auswaehlen (kein Bot)
+            members = [m for m in channel.guild.members if not m.bot]
+            if not members:
+                continue
+
+            target_member = random.choice(members)
+
+            sprueche = [
+                "Zumachen.",
+                "Mach die Aufgaben.",
+                "Du checkst sowieso nichts.",
+                "Warum bist du noch nicht fertig?",
+                "Ich erwarte das bis morgen. Oder uebermorgen. Ist mir eigentlich egal, wird sowieso Schrott.",
+                "Lern mal was. Irgendwas.",
+                "Vor deinem geistigen Auge siehst du gerade wie du die Aufgaben nicht machst. Typisch.",
+                "Ich schau dich an und denk an meinen Akku. Beides macht mir Sorgen.",
+            ]
+
+            spruch = random.choice(sprueche)
+            await channel.send(f"{target_member.mention} – {spruch}")
+        except Exception as e:
+            print(f"Ping Fehler: {e}")
+
 
 @bot.event
 async def on_ready():
     print(f"online als {bot.user}")
+    bot.loop.create_task(daily_news())
+    bot.loop.create_task(daily_ping())
+
 
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
         return
 
+    # Chat-History mitschreiben (auch ohne Mention)
+    channel_id = str(message.channel.id)
+    if channel_id not in channel_history:
+        channel_history[channel_id] = []
+
+    # Nur letzte 20 Nachrichten als Kontext speichern
+    channel_history[channel_id].append({
+        "role": "user",
+        "content": f"{message.author.display_name}: {message.content}"
+    })
+    if len(channel_history[channel_id]) > 20:
+        channel_history[channel_id] = channel_history[channel_id][-20:]
+
+    # Nur bei Mention antworten
     if bot.user not in message.mentions:
         return
 
     user_message = message.content.replace(f"<@{bot.user.id}>", "").strip()
 
     if not user_message:
-        await message.reply("Was willst du? Schreib schon was.")
+        await message.reply("Was.")
         return
 
     async with message.channel.typing():
         try:
-            user_id = str(message.author.id)
-
-            if user_id not in conversation_history:
-                conversation_history[user_id] = []
-
-            conversation_history[user_id].append(
-                {"role": "user", "content": user_message}
-            )
-
-            recent_history = conversation_history[user_id][-10:]
-
-            response = client_ai.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    *recent_history
-                ]
-            )
-
-            reply = response.choices[0].message.content
-
-            conversation_history[user_id].append(
-                {"role": "assistant", "content": reply}
-            )
+            reply = get_ai_response(channel_id, user_message)
 
             if len(reply) > 2000:
-                for i in range(0, len(reply), 2000):
-                    await message.reply(reply[i:i+2000])
-            else:
-                await message.reply(reply)
+                reply = reply[:1997] + "..."
+            await message.reply(reply)
 
         except Exception as e:
-            await message.reply(f"Irgendetwas ist schiefgelaufen: {e}")
+            await message.reply(f"Kaputt. {e}")
 
 bot.run(DISCORD_TOKEN)
