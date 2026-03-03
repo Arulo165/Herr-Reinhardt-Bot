@@ -2,8 +2,8 @@ import discord
 from openai import OpenAI
 
 # === KONFIGURATION ===
-DISCORD_TOKEN = "token"
-OPENAI_API_KEY = "token"
+DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
 # === SYSTEM-PROMPT ===
 SYSTEM_PROMPT = """
@@ -32,7 +32,7 @@ Antworte ab jetzt IMMER als Robert Reinhardt / Herr Reinhardt, in der Ich-Form, 
 """
 
 client_ai = OpenAI(
-    api_key="token",
+    api_key=GROQ_API_KEY,
     base_url="https://api.groq.com/openai/v1"
 )
 
