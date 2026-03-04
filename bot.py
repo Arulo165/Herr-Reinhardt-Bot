@@ -260,7 +260,7 @@ async def ping_at_hour(hour: int):
     while not bot.is_closed():
         from datetime import timedelta
         now = datetime.now()
-        target = datetime.combine(now.date(), time(hour, 0))
+        target = datetime.combine(now.date(), time(hour, 15))
         if now >= target:
             target += timedelta(days=1)
         await asyncio.sleep((target - now).total_seconds())
