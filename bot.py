@@ -184,7 +184,6 @@ Antworte ab jetzt IMMER als Robert Reinhardt / Herr Reinhardt, in der Ich-Form, 
 
  Aber bitte fasse dich kurz und schreibe auf keinen fall mehr als 90 wörter es muss 90 oder weniger sein
 """
-
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
@@ -255,22 +254,19 @@ async def daily_news():
         except Exception as e:
             print(f"News Fehler: {e}")
 
-
-async def daily_ping():
-    """Pingt einmal taeglich eine zufaellige Person"""
+async def ping_at_hour(hour: int):
+    """Pingt taeglich um eine bestimmte Uhrzeit"""
     await bot.wait_until_ready()
     while not bot.is_closed():
+        from datetime import timedelta
         now = datetime.now()
-        target = datetime.combine(now.date(), time(13, 27))
+        target = datetime.combine(now.date(), time(hour, 0))
         if now >= target:
-            from datetime import timedelta
             target += timedelta(days=1)
-        wait_seconds = (target - now).total_seconds()
-        await asyncio.sleep(wait_seconds)
+        await asyncio.sleep((target - now).total_seconds())
 
         if NEWS_CHANNEL_ID == 0:
             continue
-
         channel = bot.get_channel(NEWS_CHANNEL_ID)
         if not channel:
             continue
@@ -279,9 +275,7 @@ async def daily_ping():
             members = [m for m in channel.guild.members if not m.bot]
             if not members:
                 continue
-
             target_member = random.choice(members)
-
             sprueche = [
                 "Zumachen.",
                 "Mach die Aufgaben.",
@@ -292,18 +286,21 @@ async def daily_ping():
                 "Vor deinem geistigen Auge siehst du gerade wie du die Aufgaben nicht machst. Typisch.",
                 "Ich schau dich an und denk an meinen Akku. Beides macht mir Sorgen.",
             ]
-
             spruch = random.choice(sprueche)
             await channel.send(f"{target_member.mention} – {spruch}")
         except Exception as e:
             print(f"Ping Fehler: {e}")
-
+      
 
 @bot.event
 async def on_ready():
     print(f"online als {bot.user}")
     bot.loop.create_task(daily_news())
-    bot.loop.create_task(daily_ping())
+    bot.loop.create_task(ping_at_hour(7))   
+    bot.loop.create_task(ping_at_hour(8))   
+    bot.loop.create_task(ping_at_hour(9))   
+    bot.loop.create_task(ping_at_hour(10))  
+    bot.loop.create_task(ping_at_hour(11))  
 
 
 @bot.event
