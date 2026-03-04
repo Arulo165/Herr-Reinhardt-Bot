@@ -328,7 +328,11 @@ async def on_message(message):
     if "john" in message.content.lower():
         John_ID = 1429845268588793929
         john = message.guild.get_member(John_ID)
-        await message.channel.send(f"lim x-> ∞: f(x)-> fehlzeiten von {john.mention}")
+        await message.channel.send(f"lim x-> ∞ f(x)-> fehlzeiten von {john.mention}")
+        return
+
+    if "yannick" in message.content.lower():
+        await message.channel.send(f"ich Kenne keinen Yannick... Achso du meinst yurrrnick")
         return
         
     content = message.content.lower()
