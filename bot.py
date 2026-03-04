@@ -323,6 +323,25 @@ async def on_message(message):
     if "67" in message.content.lower():
         await message.channel.send(f"{message.author.mention} – Six Säväääääääääääään")
         return
+        
+    content = message.content.lower()
+
+	content = message.content.lower()
+
+	if "robert" in content or "marla" in content:
+    	guild = message.guild
+    
+    	Robert_ID = 714773249158021130
+        Marla_ID = 1442611130857029767
+        
+    	robert = message.guild.get_member(Robert_ID)
+    	marla = message.guild.get_member(Marla_ID)
+
+    	if robert and marla:
+        	await message.channel.send(
+            	f"{robert.mention} {marla.mention} – Gebt mal zu dass da was läuft... jeder weis es!"
+       	 	)
+    		return
 
     if bot.user not in message.mentions:
         return
