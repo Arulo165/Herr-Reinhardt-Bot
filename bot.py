@@ -12,7 +12,7 @@ NEWS_CHANNEL_ID = int(os.environ.get("CHANNEL_ID", "0"))  # Channel ID fuer News
 
 client_ai = OpenAI(
     api_key=GROQ_API_KEY,
-    base_url="https://api.groq.com/openai/v1"
+    base_url="https://api.x.ai/v1"
 )
 
 # === SYSTEM-PROMPT ===
@@ -74,7 +74,7 @@ def get_ai_response(channel_id: str, user_message: str, extra_context: str = "")
         system += f"\n\nZusaetzlicher Kontext aus dem Chat: {extra_context}"
 
     response = client_ai.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="grok-3",
         messages=[
             {"role": "system", "content": system},
             *recent
