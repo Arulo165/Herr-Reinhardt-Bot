@@ -319,6 +319,11 @@ async def on_message(message):
     if len(channel_history[channel_id]) > 20:
         channel_history[channel_id] = channel_history[channel_id][-20:]
 
+    
+    if "67" in message.content.lower():
+        await message.channel.send(f"{message.author.mention} – Six Säväääääääääääään")
+        return
+
     if bot.user not in message.mentions:
         return
 
