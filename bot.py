@@ -320,9 +320,11 @@ async def on_message(message):
     if "67" in message.content.lower():
         await message.channel.send(f"{message.author.mention} – 6️⃣7️⃣ Six Säväääääääääääään")
         return
-if "richard" in message.content.lower():
-        await message.channel.send(f"{message.author.mention} – Richard, weg vom Kindergarten!😠")
-        return
+        
+    if "richard" in message.content.lower():
+            await message.channel.send(f"{message.author.mention} – Richard, weg vom Kindergarten!😠")
+            return
+        
     content = message.content.lower()
     if "robert" in content or "marla" in content:
         ROBERT_ID = 714773249158021130
