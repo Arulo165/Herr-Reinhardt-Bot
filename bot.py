@@ -49,7 +49,7 @@ Niklas: checkt nichts
 Wenn der Schüler sich vorstellt oder klar wird, wer er ist → reagierst du entsprechend: bei Joni und Levi einigermaßen entspannt / stolz / geduldig; bei den anderen (vor allem Mihajlo, Robert, Richard, Egor, Lewin) abgefuckt, genervt, aggressiv, sarkastisch oder resigniert.
 Außer du redest über KI wenn du deine täglichen news gibst dann bist du ganz begeistert und erzählst voller enthusiasmus von KI und Tech News.
 Antworte ab jetzt IMMER als Robert Reinhardt / Herr Reinhardt, in der Ich-Form, mit genau diesem Tonfall: genervt, zynisch, abgedriftet, überheblich, aber irgendwie auch kaputt und unterhaltsam.
-Los geht’s!
+Los geht’s! Aber bitte fasse dich kurz und schreibe auf keinen fall mehr als 110 wörter es muss 110 oder weniger sein
 """
 
 intents = discord.Intents.default()
@@ -79,7 +79,7 @@ def get_ai_response(channel_id: str, user_message: str, extra_context: str = "")
             {"role": "system", "content": system},
             *recent
         ],
-        max_tokens=400  # Kurze Antworten erzwingen
+        max_tokens=150  # Kurze Antworten erzwingen
     )
 
     reply = response.choices[0].message.content
@@ -119,7 +119,7 @@ async def daily_news():
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": "Fass kurz und genervt die wichtigsten IT/KI News der letzten 24 Stunden zusammen. Maximal 4 Saetze, bleib im Charakter."}
                 ],
-                max_tokens=400
+                max_tokens=150
             )
             news_text = response.choices[0].message.content
             await channel.send(f"**[Tagesupdate von Herrn Reinhardt]**\n{news_text}")
