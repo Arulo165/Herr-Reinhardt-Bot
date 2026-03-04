@@ -58,7 +58,6 @@ intents.message_content = True
 intents.members = True
 bot = discord.Client(intents=intents)
 
-# Chat-History pro Channel (nicht pro User) fuer Kontext
 channel_history = {}
 
 def get_ai_response(channel_id: str, user_message: str, extra_context: str = "") -> str:
@@ -67,7 +66,6 @@ def get_ai_response(channel_id: str, user_message: str, extra_context: str = "")
 
     channel_history[channel_id].append({"role": "user", "content": user_message})
 
-    # Letzte 10 Nachrichten als Kontext
     recent = channel_history[channel_id][-10:]
 
     system = SYSTEM_PROMPT
@@ -80,13 +78,12 @@ def get_ai_response(channel_id: str, user_message: str, extra_context: str = "")
             {"role": "system", "content": system},
             *recent
         ],
-        max_tokens=120  # Kurze Antworten erzwingen
+        max_tokens=120  
     )
 
     reply = response.choices[0].message.content
     channel_history[channel_id].append({"role": "assistant", "content": reply})
 
-    # History auf 20 Nachrichten begrenzen
     if len(channel_history[channel_id]) > 20:
         channel_history[channel_id] = channel_history[channel_id][-20:]
 
@@ -98,7 +95,6 @@ async def daily_news():
     await bot.wait_until_ready()
     while not bot.is_closed():
         now = datetime.now()
-        # Jeden Tag um 9:00 Uhr posten
         target = datetime.combine(now.date(), time(9, 00))
         if now >= target:
             from datetime import timedelta
@@ -133,7 +129,6 @@ async def daily_ping():
     await bot.wait_until_ready()
     while not bot.is_closed():
         now = datetime.now()
-        # Jeden Tag um 14:00 Uhr
         target = datetime.combine(now.date(), time(13, 27))
         if now >= target:
             from datetime import timedelta
@@ -149,7 +144,6 @@ async def daily_ping():
             continue
 
         try:
-            # Zufaelliges Mitglied auswaehlen (kein Bot)
             members = [m for m in channel.guild.members if not m.bot]
             if not members:
                 continue
@@ -185,12 +179,10 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    # Chat-History mitschreiben (auch ohne Mention)
     channel_id = str(message.channel.id)
     if channel_id not in channel_history:
         channel_history[channel_id] = []
 
-    # Nur letzte 20 Nachrichten als Kontext speichern
     channel_history[channel_id].append({
         "role": "user",
         "content": f"{message.author.display_name}: {message.content}"
@@ -198,7 +190,6 @@ async def on_message(message):
     if len(channel_history[channel_id]) > 20:
         channel_history[channel_id] = channel_history[channel_id][-20:]
 
-    # Nur bei Mention antworten
     if bot.user not in message.mentions:
         return
 
