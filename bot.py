@@ -307,11 +307,9 @@ async def on_ready():
 async def on_message(message):
     if message.author == bot.user:
         return
-
     channel_id = str(message.channel.id)
     if channel_id not in channel_history:
         channel_history[channel_id] = []
-
     channel_history[channel_id].append({
         "role": "user",
         "content": f"{message.author.display_name}: {message.content}"
@@ -319,47 +317,34 @@ async def on_message(message):
     if len(channel_history[channel_id]) > 20:
         channel_history[channel_id] = channel_history[channel_id][-20:]
 
-    
     if "67" in message.content.lower():
         await message.channel.send(f"{message.author.mention} – Six Säväääääääääääään")
         return
-        
+
     content = message.content.lower()
-
-	content = message.content.lower()
-
-	if "robert" in content or "marla" in content:
-    	guild = message.guild
-    
-    	Robert_ID = 714773249158021130
-        Marla_ID = 1442611130857029767
-        
-    	robert = message.guild.get_member(Robert_ID)
-    	marla = message.guild.get_member(Marla_ID)
-
-    	if robert and marla:
-        	await message.channel.send(
-            	f"{robert.mention} {marla.mention} – Gebt mal zu dass da was läuft... jeder weis es!"
-       	 	)
-    		return
+    if "robert" in content or "marla" in content:
+        ROBERT_ID = 714773249158021130
+        MARLA_ID = 1442611130857029767
+        robert = message.guild.get_member(ROBERT_ID)
+        marla = message.guild.get_member(MARLA_ID)
+        if robert and marla:
+            await message.channel.send(
+                f"{robert.mention} {marla.mention} – Gebt mal zu dass da was läuft... jeder weis es!"
+            )
+        return
 
     if bot.user not in message.mentions:
         return
-
     user_message = message.content.replace(f"<@{bot.user.id}>", "").strip()
-
     if not user_message:
         await message.reply("Was.")
         return
-
     async with message.channel.typing():
         try:
             reply = get_ai_response(channel_id, user_message)
-
             if len(reply) > 2000:
                 reply = reply[:1997] + "..."
             await message.reply(reply)
-
         except Exception as e:
             await message.reply(f"Kaputt. {e}")
 
