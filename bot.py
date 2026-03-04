@@ -324,6 +324,16 @@ async def on_message(message):
     if "richard" in message.content.lower():
             await message.channel.send(f"Richard, weg vom Kindergarten!😠")
             return
+    content = message.content.lower()
+    if "johan" in content or "arthur" in content or "köcher" in content:
+        if "johan" in content:
+            await message.channel.send(f"Johan left the Class🇨🇴")
+        if "arthur" in content:
+            await message.channel.send(f"Arthur left the Class💀")
+        if "köcher" in content:
+            await message.channel.send(f"Alex Köcher left the Class☠️")
+        return
+    
         
     if "john" in message.content.lower():
         John_ID = 1429845268588793929
@@ -338,7 +348,7 @@ async def on_message(message):
     if "levi" in message.content.lower():
         Levi_ID = 1121781268254822402
         levi = message.guild.get_member(Levi_ID)
-        await message.channel.send(f"Nein {levi.mention} nicht du, lass die anderen Oder Jetzt darfst du auflösen")
+        await message.channel.send(f"Nein {levi.mention} nicht du, lass die anderen,... Oder Jetzt darfst du auflösen")
         return
         
     content = message.content.lower()
