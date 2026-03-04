@@ -322,7 +322,7 @@ async def on_message(message):
         return
         
     if "richard" in message.content.lower():
-            await message.channel.send(f"{message.author.mention} – Richard, weg vom Kindergarten!😠")
+            await message.channel.send(f"Richard, weg vom Kindergarten!😠")
             return
         
     content = message.content.lower()
