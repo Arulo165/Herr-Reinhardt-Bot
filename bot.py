@@ -285,6 +285,7 @@ async def ping_at_hour(hour: int):
                 "Lern mal was. Irgendwas.",
                 "Vor deinem geistigen Auge siehst du gerade wie du die Aufgaben nicht machst. Typisch.",
                 "Ich schau dich an und denk an meinen Akku. Beides macht mir Sorgen.",
+                "Halt die Fresse, Ich meld dich bei Poco an",
             ]
             spruch = random.choice(sprueche)
             await channel.send(f"{target_member.mention} – {spruch}")
