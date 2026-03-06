@@ -258,7 +258,7 @@ async def daily_news():
     await bot.wait_until_ready()
     while not bot.is_closed():
         now = datetime.now()
-        target = datetime.combine(now.date(), time(6, 30))
+        target = datetime.combine(now.date(), time(9, 7))
         if now >= target:
             from datetime import timedelta
             target += timedelta(days=1)
