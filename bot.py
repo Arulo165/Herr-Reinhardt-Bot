@@ -353,54 +353,49 @@ async def on_message(message):
     if len(channel_history[channel_id]) > 20:
         channel_history[channel_id] = channel_history[channel_id][-20:]
 
-    if "67" in message.content.lower():
-        await message.channel.send(f"{message.author.mention} – 6️⃣7️⃣ Six Säväääääääääääään")
-        return
-        
-    if "richard" in message.content.lower():
+    is_mentioned = bot.user in message.mentions
+    content = message.content.lower()
+
+    if not is_mentioned:
+        if "67" in content:
+            await message.channel.send(f"{message.author.mention} – 6️⃣7️⃣ Six Säväääääääääääään")
+            return
+        if "richard" in content:
             await message.channel.send(f"Richard, weg vom Kindergarten!😠")
             return
-    content = message.content.lower()
-    if "johan" in content or "arthur" in content or "köcher" in content:
-        if "johan" in content:
-            await message.channel.send(f"Johan left the Class🇨🇴")
-        if "arthur" in content:
-            await message.channel.send(f"Arthur left the Class💀")
-        if "köcher" in content:
-            await message.channel.send(f"Alex Köcher left the Class☠️")
-        return
-    
-        
-    if "john" in message.content.lower():
-        John_ID = 1429845268588793929
-        john = message.guild.get_member(John_ID)
-        await message.channel.send(f"lim x-> ∞ f(x)-> fehlzeiten von {john.mention}")
-        return
+        if "johan" in content or "arthur" in content or "köcher" in content:
+            if "johan" in content:
+                await message.channel.send(f"Johan left the Class🇨🇴")
+            if "arthur" in content:
+                await message.channel.send(f"Arthur left the Class💀")
+            if "köcher" in content:
+                await message.channel.send(f"Alex Köcher left the Class☠️")
+            return
+        if "john" in content:
+            John_ID = 1429845268588793929
+            john = message.guild.get_member(John_ID)
+            await message.channel.send(f"lim x-> ∞ f(x)-> fehlzeiten von {john.mention}")
+            return
+        if "yannick" in content:
+            await message.channel.send(f"ich Kenne keinen Yannick... Achso du meinst yurrrnick")
+            return
+        if "levi" in content:
+            Levi_ID = 1121781268254822402
+            levi = message.guild.get_member(Levi_ID)
+            await message.channel.send(f"Nein {levi.mention} nicht du, lass die anderen,... Oder Jetzt darfst du auflösen")
+            return
+        if "robert" in content or "marla" in content:
+            ROBERT_ID = 714773249158021130
+            MARLA_ID = 1442611130857029767
+            robert = message.guild.get_member(ROBERT_ID)
+            marla = message.guild.get_member(MARLA_ID)
+            if robert and marla:
+                await message.channel.send(
+                    f"{robert.mention} {marla.mention} – Gebt mal zu dass da was läuft... jeder weiß es!😼"
+                )
+            return
+        return  # kein Ping, kein Keyword → nichts tun
 
-    if "yannick" in message.content.lower():
-        await message.channel.send(f"ich Kenne keinen Yannick... Achso du meinst yurrrnick")
-        return
-        
-    if "levi" in message.content.lower():
-        Levi_ID = 1121781268254822402
-        levi = message.guild.get_member(Levi_ID)
-        await message.channel.send(f"Nein {levi.mention} nicht du, lass die anderen,... Oder Jetzt darfst du auflösen")
-        return
-        
-    content = message.content.lower()
-    if "robert" in content or "marla" in content:
-        ROBERT_ID = 714773249158021130
-        MARLA_ID = 1442611130857029767
-        robert = message.guild.get_member(ROBERT_ID)
-        marla = message.guild.get_member(MARLA_ID)
-        if robert and marla:
-            await message.channel.send(
-                f"{robert.mention} {marla.mention} – Gebt mal zu dass da was läuft... jeder weiß es!😼"
-            )
-        return
-
-    if bot.user not in message.mentions:
-        return
     user_message = message.content.replace(f"<@{bot.user.id}>", "").strip()
     if not user_message:
         await message.reply("Was.")
