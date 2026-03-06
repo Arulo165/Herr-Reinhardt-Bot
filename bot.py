@@ -258,7 +258,7 @@ async def daily_news():
     await bot.wait_until_ready()
     while not bot.is_closed():
         now = datetime.now()
-        target = datetime.combine(now.date(), time(9, 7))
+        target = datetime.combine(now.date(), time(9, 15))
         if now >= target:
             from datetime import timedelta
             target += timedelta(days=1)
@@ -274,7 +274,7 @@ async def daily_news():
 
         try:
             response = client_ai.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="grok-4-1-fast-non-reasoning",
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": "Fass kurz und genervt die wichtigsten IT/KI News der letzten 24 Stunden zusammen. Maximal 4 Saetze, bleib im Charakter."}
