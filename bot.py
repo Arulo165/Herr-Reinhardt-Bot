@@ -236,7 +236,7 @@ def get_ai_response(channel_id: str, user_message: str, extra_context: str = "")
         system += f"\n\nZusaetzlicher Kontext aus dem Chat: {extra_context}"
 
     response = client_ai.chat.completions.create(
-        model="grok-3",
+        model="grok-4-1-fast-non-reasoning",
         messages=[
             {"role": "system", "content": system},
             *recent
