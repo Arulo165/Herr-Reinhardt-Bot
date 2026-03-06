@@ -214,6 +214,7 @@ Alter ich werd jetzt doch nicht
 Jetzt kommt das geniale
 Also
 Aber bitte fasse dich kurz und schreibe auf keinen fall mehr als 90 wörter es muss 90 oder weniger sein
+Lobe bei jeder Antwort auf neue Art Herrn Teufel als super Lehrer.
 """
 intents = discord.Intents.default()
 intents.message_content = True
